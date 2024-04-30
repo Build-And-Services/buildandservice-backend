@@ -9,4 +9,5 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::prefix('/v1')->group(function() {
     include __DIR__ . '/team.php';
+    include __DIR__.'/tech-stack.php';
 });
