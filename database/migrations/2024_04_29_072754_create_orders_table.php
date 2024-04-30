@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,6 +18,8 @@ return new class extends Migration
             $table->string('project_description');
             $table->string('techstack_detail');
             $table->string('file_requirement');
+            $table->string('min_price');
+            $table->string('max_price');
             $table->enum('client_type', ['MAHASISWA', 'INSTANSI', 'PRIBADI']);
             $table->enum('project_type', ['WEB', 'MOBILE', 'MACHINE LEARNING', 'CONSULT', 'DESIGN']);
             $table->enum('status', ['ACCEPT', 'REQUEST', 'CANCEL'])->default('REQUEST');
