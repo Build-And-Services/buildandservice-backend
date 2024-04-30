@@ -50,8 +50,8 @@ class TeamController extends BaseController
 
             $file = $request->file('image');
             $fileName = $file->getClientOriginalName();
-            $filePath = 'images/' . $fileName;
-            $file->move('images', $fileName);
+            $filePath = 'images/team/' . $fileName;
+            $file->move('images/team', $fileName);
 
             // $team = DB::insert('INSERT INTO teams (name, description, image, github, linkedin, instagram, web_porto) VALUES (?, ?, ?, ?, ?, ?)', [$name, $description, $filePath, $github, $linkedin, $instagram, $web_porto]);
 
@@ -94,7 +94,7 @@ class TeamController extends BaseController
                 }
                 $file = $request->file('image');
                 $fileName = $file->getClientOriginalName();
-                $filePath = 'images/' . $fileName;
+                $filePath = 'images/team/' . $fileName;
                 $file->move('images', $fileName);
             }else {
                 $filePath =  $team->image;
