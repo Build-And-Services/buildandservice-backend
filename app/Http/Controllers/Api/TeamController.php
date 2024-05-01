@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Resources\TeamResource;
 use App\Models\Team;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TeamResource;
 
 class TeamController extends BaseController
 {
@@ -49,16 +50,18 @@ class TeamController extends BaseController
             // $web_porto = $request->web_porto;
 
             $file = $request->file('image');
-            $fileName = $file->getClientOriginalName();
+            $fileExtension = $file->getClientOriginalExtension();
+            $fileName = time() . '_' . Str::random(10) . '.' . $fileExtension;
             $filePath = 'images/team/' . $fileName;
             $file->move('images/team', $fileName);
+
 
             // $team = DB::insert('INSERT INTO teams (name, description, image, github, linkedin, instagram, web_porto) VALUES (?, ?, ?, ?, ?, ?)', [$name, $description, $filePath, $github, $linkedin, $instagram, $web_porto]);
 
             $team = Team::create([
                 'name' => $request->name,
                 'description' => $request->description,
-                'image' => $filePath,
+                'image' => url($filePath),
                 'github' => $request->github,
                 'linkedin' => $request->linkedin,
                 'instagram' => $request->instagram,
@@ -89,13 +92,18 @@ class TeamController extends BaseController
             // dd($team);
 
             if ($request->hasFile('image')) {
-                if (file_exists($team->image)) {
-                    unlink($team->image);
+                $fileUrl = $team->image;
+                $filePath = parse_url($fileUrl, PHP_URL_PATH);
+                $filePath = ltrim($filePath, '/');
+
+                if (file_exists(( $filePath))) {
+                    unlink(( $filePath));
                 }
                 $file = $request->file('image');
-                $fileName = $file->getClientOriginalName();
+                $fileExtension = $file->getClientOriginalExtension();
+                $fileName = time() . '_' . Str::random(10) . '.' . $fileExtension;
                 $filePath = 'images/team/' . $fileName;
-                $file->move('images', $fileName);
+                $file->move('images/team', $fileName);
             }else {
                 $filePath =  $team->image;
             }
@@ -104,7 +112,7 @@ class TeamController extends BaseController
             $team->update([
                 'name' => $request->name,
                 'description' => $request->description,
-                'image' => $filePath,
+                'image' => url($filePath),
                 'github' => $request->github,
                 'linkedin' => $request->linkedin,
                 'instagram' => $request->instagram,
@@ -122,11 +130,19 @@ class TeamController extends BaseController
         try {
             // $team = DB::table('teams')->where('id', $id)->get();
             $team = Team::findOrFail($id);
-            if (file_exists(( $team->image))) {
-                unlink(( $team->image));
+
+            $fileUrl = $team->image;
+            $filePath = parse_url($fileUrl, PHP_URL_PATH);
+            $filePath = ltrim($filePath, '/');
+
+            if (file_exists(( $filePath))) {
+                unlink(( $filePath));
             }
             $team->delete();
-            return $this->sendResponse(new TeamResource($team), 'Successfully deleted team', 203);
+            return response()->json([
+                "message" => "Successfully delete data",
+                "status" => 200,
+            ]);
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 400);
         }
